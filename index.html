@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PosturePerfect - Your Hunchback Correction Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 8px;
+        }
+
+        .measurement-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .measurement-label {
+            text-align: center;
+            color: var(--dark);
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #3aa8d8;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .counter-display {
+            font-size: 3rem;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--secondary);
+        }
+
+        .habit-tracker {
+            margin-top: 20px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .day {
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9ecef;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .day.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .day.missed {
+            background: var(--danger);
+            color: white;
+        }
+
+        .day:hover {
+            transform: scale(1.05);
+        }
+
+        .progress-container {
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .milestones {
+            margin-top: 20px;
+        }
+
+        .milestone {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+        }
+
+        .milestone:hover {
+            background: #e9ecef;
+        }
+
+        .milestone-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .milestone.completed .milestone-icon {
+            color: var(--success);
+        }
+
+        .milestone-text {
+            flex: 1;
+        }
+
+        .milestone-checkbox {
+            margin-left: 10px;
+        }
+
+        .tips-section {
+            margin-top: 30px;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .tip-card h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .history-chart {
+            height: 300px;
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-close {
+            background: var(--danger);
+        }
+
+        .btn-close:hover {
+            background: #bb2d3b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PosturePerfect</h1>
+            <p>Your personal hunchback correction progress tracker</p>
+        </header>
+
+        <div class="dashboard">
+            <!-- Measurement Card -->
+            <div class="card">
+                <h2><i class="fas fa-ruler-combined"></i> Posture Measurement</h2>
+                <p class="measurement-label">Current Shoulder Angle</p>
+                <div class="measurement-display" id="current-angle">-°</div>
+                <button class="btn btn-block" id="measure-btn">
+                    <i class="fas fa-plus"></i> Add Measurement
+                </button>
+                <div class="progress-container">
+                    <p>Progress toward straight posture</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="posture-progress" style="width: 0%"></div>
+                    </div>
+                    <p id="progress-text">0% improved</p>
+                </div>
+            </div>
+
+            <!-- Awareness Counter Card -->
+            <div class="card">
+                <h2><i class="fas fa-bell"></i> Posture Awareness</h2>
+                <p>Times you caught yourself hunching today:</p>
+                <div class="counter-display" id="hunch-counter">0</div>
+                <button class="btn btn-accent btn-block" id="increment-counter">
+                    <i class="fas fa-plus"></i> Add Count
+                </button>
+                <button class="btn btn-block" id="reset-counter">
+                    <i class="fas fa-redo"></i> Reset Daily Counter
+                </button>
+            </div>
+
+            <!-- Habit Tracker Card -->
+            <div class="card">
+                <h2><i class="fas fa-calendar-check"></i> Daily Stretching</h2>
+                <p>Track your daily stretching routine:</p>
+                <div class="habit-tracker">
+                    <button class="btn btn-success btn-block" id="log-stretching">
+                        <i class="fas fa-check"></i> Log Today's Stretching
+                    </button>
+                    <div class="calendar" id="stretching-calendar">
+                        <!-- Calendar days will be added by JavaScript -->
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <p>Current streak: <span id="current-streak">0</span> days</p>
+                    <p>Longest streak: <span id="longest-streak">0</span> days</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Milestones Section -->
+        <div class="card">
+            <h2><i class="fas fa-trophy"></i> Milestones</h2>
+            <p>Set and track your posture correction goals:</p>
+            <div class="milestones" id="milestones-list">
+                <!-- Sample milestones - these can be edited/deleted -->
+                <div class="milestone">
+                    <div class="milestone-icon"><i class="fas fa-flag"></i></div>
+                    <div class="milestone-text">1 week of consistent stretching</div>
+                    <input type="checkbox" class="milestone-checkbox">
+                </div>
+                <div class="milestone">
+                    <div class="milestone-icon"><i class="fas fa-flag"></i></div>
+                    <div class="milestone-text">Reduce hunching count to &lt;5/day</div>
+                    <input type="checkbox" class="milestone-checkbox">
+                </div>
+                <div class="milestone">
+                    <div class="milestone-icon"><i class="fas fa-flag"></i></div>
+                    <div class="milestone-text">Improve shoulder angle by 5°</div>
+                    <input type="checkbox" class="milestone-checkbox">
+                </div>
+            </div>
+            <button class="btn btn-block" id="add-milestone">
+                <i class="fas fa-plus"></i> Add New Milestone
+            </button>
+        </div>
+
+        <!-- Progress Chart -->
+        <div class="card">
+            <h2><i class="fas fa-chart-line"></i> Progress History</h2>
+            <p>Track your posture improvement over time:</p>
+            <div class="history-chart" id="progress-chart">
+                <!-- Chart will be rendered by JavaScript -->
+                <p style="text-align: center; margin-top: 120px;">Your progress chart will appear here as you log measurements</p>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="card tips-section">
+            <h2><i class="fas fa-lightbulb"></i> Posture Improvement Tips</h2>
+            <div class="tip-card">
+                <h3>1. Chin Tucks</h3>
+                <p>Gently pull your chin straight back to align your head over your spine. Hold for 5 seconds and repeat 10 times.</p>
+            </div>
+            <div class="tip-card">
+                <h3>2. Shoulder Blade Squeeze</h3>
+                <p>Sit or stand tall, then squeeze your shoulder blades together. Hold for 5-10 seconds and repeat 10 times.</p>
+            </div>
+            <div class="tip-card">
+                <h3>3. Thoracic Extension</h3>
+                <p>Place a foam roller horizontally under your upper back. Gently arch backward over the roller to open up your chest.</p>
+            </div>
+            <button class="btn btn-block" id="add-tip">
+                <i class="fas fa-plus"></i> Add Your Own Tip
+            </button>
+        </div>
+
+        <footer>
+            <p>PosturePerfect &copy; 2023 | Track your journey to better posture</p>
+        </footer>
+    </div>
+
+    <!-- Measurement Modal -->
+    <div class="modal" id="measurement-modal">
+        <div class="modal-content">
+            <h2>Add Posture Measurement</h2>
+            <div class="form-group">
+                <label for="measurement-value">Shoulder Angle (degrees):</label>
+                <input type="number" id="measurement-value" placeholder="Enter your shoulder angle measurement">
+            </div>
+            <div class="form-group">
+                <label for="measurement-notes">Notes (optional):</label>
+                <textarea id="measurement-notes" rows="3" placeholder="Any notes about today's posture"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-close" id="cancel-measurement">Cancel</button>
+                <button class="btn btn-success" id="save-measurement">Save Measurement</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Milestone Modal -->
+    <div class="modal" id="milestone-modal">
+        <div class="modal-content">
+            <h2>Add New Milestone</h2>
+            <div class="form-group">
+                <label for="milestone-text">Milestone Description:</label>
+                <input type="text" id="milestone-text" placeholder="Describe your milestone goal">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-close" id="cancel-milestone">Cancel</button>
+                <button class="btn btn-success" id="save-milestone">Add Milestone</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tip Modal -->
+    <div class="modal" id="tip-modal">
+        <div class="modal-content">
+            <h2>Add Your Own Tip</h2>
+            <div class="form-group">
+                <label for="tip-title">Tip Title:</label>
+                <input type="text" id="tip-title" placeholder="Name of the exercise or tip">
+            </div>
+            <div class="form-group">
+                <label for="tip-description">Description:</label>
+                <textarea id="tip-description" rows="4" placeholder="Detailed description of the tip"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-close" id="cancel-tip">Cancel</button>
+                <button class="btn btn-success" id="save-tip">Save Tip</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const measureBtn = document.getElementById('measure-btn');
+        const hunchCounter = document.getElementById('hunch-counter');
+        const incrementCounterBtn = document.getElementById('increment-counter');
+        const resetCounterBtn = document.getElementById('reset-counter');
+        const logStretchingBtn = document.getElementById('log-stretching');
+        const stretchingCalendar = document.getElementById('stretching-calendar');
+        const currentStreakEl = document.getElementById('current-streak');
+        const longestStreakEl = document.getElementById('longest-streak');
+        const addMilestoneBtn = document.getElementById('add-milestone');
+        const milestonesList = document.getElementById('milestones-list');
+        const addTipBtn = document.getElementById('add-tip');
+        const currentAngleEl = document.getElementById('current-angle');
+        const postureProgress = document.getElementById('posture-progress');
+        const progressText = document.getElementById('progress-text');
+
+        // Modal elements
+        const measurementModal = document.getElementById('measurement-modal');
+        const cancelMeasurementBtn = document.getElementById('cancel-measurement');
+        const saveMeasurementBtn = document.getElementById('save-measurement');
+        const measurementValueInput = document.getElementById('measurement-value');
+        
+        const milestoneModal = document.getElementById('milestone-modal');
+        const cancelMilestoneBtn = document.getElementById('cancel-milestone');
+        const saveMilestoneBtn = document.getElementById('save-milestone');
+        
+        const tipModal = document.getElementById('tip-modal');
+        const cancelTipBtn = document.getElementById('cancel-tip');
+        const saveTipBtn = document.getElementById('save-tip');
+
+        // Initialize data from localStorage or set defaults
+        let postureData = JSON.parse(localStorage.getItem('postureData')) || {
+            measurements: [],
+            hunchCount: 0,
+            lastHunchReset: null,
+            stretchingDays: {},
+            currentStreak: 0,
+            longestStreak: 0,
+            milestones: [
+                { text: "1 week of consistent stretching", completed: false },
+                { text: "Reduce hunching count to <5/day", completed: false },
+                { text: "Improve shoulder angle by 5°", completed: false }
+            ],
+            tips: [
+                { title: "Chin Tucks", description: "Gently pull your chin straight back to align your head over your spine. Hold for 5 seconds and repeat 10 times." },
+                { title: "Shoulder Blade Squeeze", description: "Sit or stand tall, then squeeze your shoulder blades together. Hold for 5-10 seconds and repeat 10 times." },
+                { title: "Thoracic Extension", description: "Place a foam roller horizontally under your upper back. Gently arch backward over the roller to open up your chest." }
+            ]
+        };
+
+        // Initialize the app
+        function initApp() {
+            // Set up hunch counter
+            updateHunchCounter();
+            
+            // Set up stretching calendar
+            renderCalendar();
+            updateStreakDisplay();
+            
+            // Set up milestones
+            renderMilestones();
+            
+            // Set up tips (they're already in the HTML)
+            
+            // Set up measurement display
+            updateMeasurementDisplay();
+        }
+
+        // Hunch counter functions
+        function updateHunchCounter() {
+            // Check if we need to reset the counter (new day)
+            const today = new Date().toDateString();
+            if (postureData.lastHunchReset !== today) {
+                postureData.hunchCount = 0;
+                postureData.lastHunchReset = today;
+                saveData();
+            }
+            
+            hunchCounter.textContent = postureData.hunchCount;
+        }
+
+        incrementCounterBtn.addEventListener('click', () => {
+            postureData.hunchCount++;
+            saveData();
+            updateHunchCounter();
+        });
+
+        resetCounterBtn.addEventListener('click', () => {
+            postureData.hunchCount = 0;
+            saveData();
+            updateHunchCounter();
+        });
+
+        // Measurement functions
+        function updateMeasurementDisplay() {
+            if (postureData.measurements.length > 0) {
+                const latest = postureData.measurements[postureData.measurements.length - 1];
+                currentAngleEl.textContent = `${latest.angle}°`;
+                
+                // Calculate progress (assuming lower angle is better)
+                const initialAngle = postureData.measurements[0].angle;
+                const currentAngle = latest.angle;
+                const progress = Math.min(100, Math.max(0, ((initialAngle - currentAngle) / initialAngle) * 100));
+                postureProgress.style.width = `${progress}%`;
+                progressText.textContent = `${Math.round(progress)}% improved`;
+            }
+        }
+
+        measureBtn.addEventListener('click', () => {
+            measurementModal.style.display = 'flex';
+            measurementValueInput.value = '';
+        });
+
+        cancelMeasurementBtn.addEventListener('click', () => {
+            measurementModal.style.display = 'none';
+        });
+
+        saveMeasurementBtn.addEventListener('click', () => {
+            const angle = parseFloat(measurementValueInput.value);
+            if (isNaN(angle)) {
+                alert('Please enter a valid number for the angle');
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            const notes = document.getElementById('measurement-notes').value;
+            
+            postureData.measurements.push({
+                date: today,
+                angle: angle,
+                notes: notes
+            });
+            
+            saveData();
+            measurementModal.style.display = 'none';
+            updateMeasurementDisplay();
+            
+            // For now, we'll just log to console - in a real app you'd render a chart
+            console.log('Measurements:', postureData.measurements);
+        });
+
+        // Stretching habit tracker functions
+        function renderCalendar() {
+            stretchingCalendar.innerHTML = '';
+            
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+            
+            // Get days in month
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Create calendar days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                const dayEl = document.createElement('div');
+                dayEl.className = 'day';
+                dayEl.textContent = i;
+                
+                if (i === today.getDate()) {
+                    dayEl.style.border = '2px solid var(--accent)';
+                }
+                
+                if (postureData.stretchingDays[dateStr]) {
+                    dayEl.classList.add('completed');
+                } else if (i < today.getDate()) {
+                    dayEl.classList.add('missed');
+                }
+                
+                stretchingCalendar.appendChild(dayEl);
+            }
+        }
+
+        function updateStreak() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            const todayStr = today.toISOString().split('T')[0];
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            if (postureData.stretchingDays[todayStr]) {
+                // Already logged today
+                return;
+            }
+            
+            if (postureData.stretchingDays[yesterdayStr]) {
+                // Continuing streak
+                postureData.currentStreak++;
+            } else {
+                // New streak
+                postureData.currentStreak = 1;
+            }
+            
+            // Update longest streak if needed
+            if (postureData.currentStreak > postureData.longestStreak) {
+                postureData.longestStreak = postureData.currentStreak;
+            }
+            
+            saveData();
+        }
+
+        function updateStreakDisplay() {
+            currentStreakEl.textContent = postureData.currentStreak;
+            longestStreakEl.textContent = postureData.longestStreak;
+        }
+
+        logStretchingBtn.addEventListener('click', () => {
+            const today = new Date().toISOString().split('T')[0];
+            postureData.stretchingDays[today] = true;
+            
+            updateStreak();
+            saveData();
+            renderCalendar();
+            updateStreakDisplay();
+        });
+
+        // Milestone functions
+        function renderMilestones() {
+            milestonesList.innerHTML = '';
+            
+            postureData.milestones.forEach((milestone, index) => {
+                const milestoneEl = document.createElement('div');
+                milestoneEl.className = 'milestone';
+                if (milestone.completed) {
+                    milestoneEl.classList.add('completed');
+                }
+                
+                milestoneEl.innerHTML = `
+                    <div class="milestone-icon"><i class="fas fa-${milestone.completed ? 'check' : 'flag'}"></i></div>
+                    <div class="milestone-text">${milestone.text}</div>
+                    <input type="checkbox" class="milestone-checkbox" ${milestone.completed ? 'checked' : ''}>
+                `;
+                
+                const checkbox = milestoneEl.querySelector('.milestone-checkbox');
+                checkbox.addEventListener('change', () => {
+                    postureData.milestones[index].completed = checkbox.checked;
+                    saveData();
+                    renderMilestones();
+                });
+                
+                milestonesList.appendChild(milestoneEl);
+            });
+        }
+
+        addMilestoneBtn.addEventListener('click', () => {
+            milestoneModal.style.display = 'flex';
+        });
+
+        cancelMilestoneBtn.addEventListener('click', () => {
+            milestoneModal.style.display = 'none';
+        });
+
+        saveMilestoneBtn.addEventListener('click', () => {
+            const text = document.getElementById('milestone-text').value.trim();
+            if (!text) {
+                alert('Please enter a milestone description');
+                return;
+            }
+            
+            postureData.milestones.push({
+                text: text,
+                completed: false
+            });
+            
+            saveData();
+            milestoneModal.style.display = 'none';
+            document.getElementById('milestone-text').value = '';
+            renderMilestones();
+        });
+
+        // Tip functions
+        addTipBtn.addEventListener('click', () => {
+            tipModal.style.display = 'flex';
+        });
+
+        cancelTipBtn.addEventListener('click', () => {
+            tipModal.style.display = 'none';
+        });
+
+        saveTipBtn.addEventListener('click', () => {
+            const title = document.getElementById('tip-title').value.trim();
+            const description = document.getElementById('tip-description').value.trim();
+            
+            if (!title || !description) {
+                alert('Please fill in both title and description');
+                return;
+            }
+            
+            postureData.tips.push({
+                title: title,
+                description: description
+            });
+            
+            // Add to the UI
+            const tipsSection = document.querySelector('.tips-section');
+            const newTip = document.createElement('div');
+            newTip.className = 'tip-card';
+            newTip.innerHTML = `
+                <h3>${title}</h3>
+                <p>${description}</p>
+            `;
+            
+            tipsSection.insertBefore(newTip, addTipBtn);
+            
+            saveData();
+            tipModal.style.display = 'none';
+            document.getElementById('tip-title').value = '';
+            document.getElementById('tip-description').value = '';
+        });
+
+        // Utility functions
+        function saveData() {
+            localStorage.setItem('postureData', JSON.stringify(postureData));
+        }
+
+        // Initialize the app
+        initApp();
+    </script>
+</body>
+</html>
